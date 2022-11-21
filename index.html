@@ -1,1 +1,50 @@
-Hello world
+<!DOCTYPE html>
+<html>
+    <head>
+
+    </head>
+    <script>
+        function loginDialog () {
+            let request = require('request');
+            let client_id = 'CLIENT_ID';
+            let client_secret = 'CLIENT_SECRET';
+            let redirect_uri = 'https://zylacx.github.io/spotifyProject2/callback'
+    
+            let authOptions = {
+                url: 'https://accounts.spotify.com/api/token',
+                headers: {
+                    'Authorization': 'Basic ' + (new Buffer(client_id + ':' + client_secret).toString('base64'))
+                },
+                form: {
+                    grant_type: 'client_credentials'
+                },
+                json: true
+            };
+    
+            request.post(authOptions, function(error, response, body) {
+                if (!error && response.statusCode === 200) {
+    
+                // use the access token to access the Spotify Web API
+                let token = body.access_token;
+                let options = {
+                    url: 'https://api.spotify.com/v1/users/jmperezperez',
+                    headers: {
+                        'Authorization': 'Bearer ' + token
+                    },
+                    json: true
+                };
+                request.get(options, function(error, response, body) {
+                    console.log(body);
+                });
+                }
+            });
+        };
+    </script>
+    <body>
+        <input onclick="loginDialog()" type="button">
+        <input id="query" name="search-query" type="text">
+    </body>
+    <footer>
+
+    </footer>
+</html>
